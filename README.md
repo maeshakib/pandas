@@ -402,7 +402,7 @@ df.describe()     # Statistical summary
 # Selecting columns
 df['col1']           # Single column (returns Series)
 df[['col1', 'col2']] # Multiple columns (returns DataFrame)
-```
+
 # Selecting rows
 df.iloc[0]           # First row by index
 df.loc[0]            # First row by label
@@ -470,4 +470,102 @@ df.to_csv('filename.csv', index=False)  # Export to CSV
 df.to_excel('filename.xlsx', index=False)  # Export to Excel
 df.to_json('filename.json')  # Export to JSON
 
+```
+Aggregate Methods Supported by Pandas
+
+Pandas provides several aggregation methods to summarize and analyze data in Series and DataFrames. Here's a summary of the supported methods along with a sample code snippet for each.
+1. Basic Aggregations
+
+    count: Number of non-missing values.
+    mean: Average of values.
+    sum: Sum of values.
+    min: Minimum value.
+    max: Maximum value.
+    std: Standard deviation of values.
+    var: Variance of values.
+    median: Median value.
+    quantile: Quantile of values.
+
+2. Additional Aggregations
+
+    mad: Mean absolute deviation.
+    skew: Skewness of the distribution.
+    kurt: Kurtosis (tailedness) of the distribution.
+    sem: Standard error of the mean.
+    prod: Product of all values.
+    size: Number of elements including missing ones.
+    nunique: Number of unique values.
+    idxmax: Index of the first occurrence of the maximum value.
+    idxmin: Index of the first occurrence of the minimum value.
+
+3. Example Using .agg Method
+
+python
+
+import pandas as pd
+import numpy as np
+
+# Sample Series
+data = pd.Series([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+
+# Applying multiple aggregation functions using .agg
+result = data.agg(['count', 'mean', 'sum', 'min', 'max', 'std', 'var'])
+print(result)
+
+4. Custom Aggregations
+
+You can define your own aggregation functions and apply them using .agg.
+
+```python
+
+def range_func(x):
+    return x.max() - x.min()
+
+# Applying custom function along with built-in functions
+result = data.agg(['mean', 'var', range_func])
+print(result)
+```
+Exercises
+
+    Find the count of non-missing values of a series:
+
+    ```python
+
+count = data.count()
+print(count)
+```
+Find the number of entries of a series (including missing values):
+
+```python
+
+size = data.size
+print(size)
+```
+Find the number of unique entries of a series:
+
+```python
+
+unique_count = data.nunique()
+print(unique_count)
+```
+Find the mean value of a series:
+
+```python
+
+mean_value = data.mean()
+print(mean_value)
+```
+Find the maximum value of a series:
+
+```python
+
+max_value = data.max()
+print(max_value)
+
+Use the .agg method to find all of the above:
+
+```python
+
+result = data.agg(['count', 'size', 'nunique', 'mean', 'max'])
+print(result)
 ```
