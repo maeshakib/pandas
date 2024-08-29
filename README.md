@@ -310,50 +310,59 @@ reviewer_mean_ratings = reviews.groupby('taster_name').points.mean()
 country_variety_counts = reviews.groupby(['country', 'variety']).size().sort_values(ascending=False)
 
 ```
+##  05-data-types-and-missing-value
+### 1.What is the data type of the points column in the dataset?
+```python
+dtype = reviews.points.dtype
 
+```
+### 2.create a Series from entries in the points column, but convert the entries to strings. Hint: strings are str in native Python.
 
 ```python
-median_points = reviews.points.median()
-median_points
+point_strings = reviews.points.astype('str')
+
+```
+### 3. Sometimes the price column is null. How many reviews in the dataset are missing a price?
+```python
+n_missing_prices = reviews.price.isnull().sum()
+
+```
+### 4.What are the most common wine-producing regions? Create a Series counting the number of times each value occurs in the region_1 field. This field is often missing data, so replace missing values with Unknown. Sort in descending order. Your output should look something like this:
+
+```python
+reviews_with_unknown = reviews.region_1.fillna('Unknown')
+reviews_per_region = reviews.region_1.fillna('Unknown').value_counts().sort_values(ascending=False)
+
 ```
 
 
+## 06-renaming-and-combining
+
+### 1.region_1 and region_2 are pretty uninformative names for locale columns in the dataset. Create a copy of reviews with these columns renamed to region and locale, respectively.
+
 ```python
-median_points = reviews.points.median()
-median_points
+renamed = reviews.rename(columns={'region_1': 'region', 'region_2': 'locale'})
+
 ```
+### 2.Set the index name in the dataset to wines.
 
 ```python
-median_points = reviews.points.median()
-median_points
+reindexed = reviews.rename_axis('wines', axis='rows')
+
 ```
-
+###3. The Things on Reddit dataset includes product links from a selection of top-ranked forums ("subreddits") on reddit.com. Run the cell below to load a dataframe of products mentioned on the /r/gaming subreddit and another dataframe for products mentioned on the r//movies subreddit.
 
 ```python
-median_points = reviews.points.median()
-median_points
+gaming_products = pd.read_csv("../input/things-on-reddit/top-things/top-things/reddits/g/gaming.csv")
+gaming_products['subreddit'] = "r/gaming"
+movie_products = pd.read_csv("../input/things-on-reddit/top-things/top-things/reddits/m/movies.csv")
+movie_products['subreddit'] = "r/movies"
 ```
+### 4.The Powerlifting Database dataset on Kaggle includes one CSV table for powerlifting meets and a separate one for powerlifting competitors. Run the cell below to load these datasets into dataframes:
 
 ```python
-median_points = reviews.points.median()
-median_points
-```
-
-
-```python
-median_points = reviews.points.median()
-median_points
-```
-
-```python
-median_points = reviews.points.median()
-median_points
-```
-
-
-```python
-median_points = reviews.points.median()
-median_points
+powerlifting_meets = pd.read_csv("../input/powerlifting-database/meets.csv")
+powerlifting_competitors = pd.read_csv("../input/powerlifting-database/openpowerlifting.csv")
 ```
 
 ```python
