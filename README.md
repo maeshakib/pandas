@@ -569,3 +569,198 @@ Use the .agg method to find all of the above:
 result = data.agg(['count', 'size', 'nunique', 'mean', 'max'])
 print(result)
 ```
+## Pandas Manipulation Methods Cheat Sheet
+### 1. Applying Functions with .apply and .where
+
+- .apply: Applies a function along an axis of the DataFrame.
+- .where: Replaces values where the condition is False, keeping the original where True.
+
+```python
+
+import pandas as pd
+
+# Example with .apply
+df['new_col'] = df['existing_col'].apply(lambda x: x * 2)
+
+# Example with .where
+df['new_col'] = df['existing_col'].where(df['existing_col'] > 0, other=0)
+```
+2. Conditional Logic with If-Else
+
+    Use .apply for complex conditions.
+    For simple cases, NumPy's np.where can be faster.
+
+```python
+
+import numpy as np
+
+# Using .apply
+df['label'] = df['score'].apply(lambda x: 'high' if x > 50 else 'low')
+
+# Using np.where
+df['label'] = np.where(df['score'] > 50, 'high', 'low')
+```
+3. Handling Missing Data
+
+```python
+    .isna(): Detects missing values.
+    .fillna(): Fills missing values with a specified value.
+
+
+# Detect missing values
+missing = df['col'].isna()
+
+# Fill missing values with a specific value
+df['col'] = df['col'].fillna(0)
+```
+4. Filling and Interpolating Missing Data
+
+    .fillna(): Fill with a specific value.
+    .interpolate(): Fill missing values using interpolation.
+
+```python
+
+# Fill missing data with 0
+df['col'] = df['col'].fillna(0)
+
+# Interpolate missing data
+df['col'] = df['col'].interpolate()
+```
+5. Clipping Data
+
+    .clip(): Restricts the values in a Series to a specified range.
+
+```python
+
+# Clip values to a specific range
+df['col'] = df['col'].clip(lower=10, upper=90)
+```
+6. Sorting Data
+
+    .sort_values(): Sort by the values along either axis.
+    .sort_index(): Sort by the index.
+
+```python
+
+# Sort by values
+df_sorted = df.sort_values(by='col', ascending=True)
+
+# Sort by index
+df_sorted = df.sort_index(ascending=False)
+```
+7. Dropping Duplicates
+```python
+    .drop_duplicates(): Remove duplicate rows.
+
+
+
+df_unique = df.drop_duplicates()
+```
+8. Ranking Data
+
+    .rank(): Compute numerical data ranks along an axis.
+
+```python
+
+df['rank'] = df['col'].rank(method='dense')
+```
+9. Replacing Data
+
+    .replace(): Replace values given in a list, dictionary, or series.
+
+```python
+
+df['col'] = df['col'].replace({'old_value': 'new_value'})
+```
+10. Binning Data
+
+    .cut(): Bin values into discrete intervals.
+    .qcut(): Bin into quantiles.
+
+```python
+
+# Bin into equal-width intervals
+df['binned'] = pd.cut(df['col'], bins=10)
+
+# Bin into quantiles
+df['binned'] = pd.qcut(df['col'], q=4)
+```
+Exercises
+
+    Create a series from a numeric column that is 'high' if it is equal to or above the mean and 'low' otherwise using .apply:
+
+    ```python
+
+mean_val = df['col'].mean()
+df['label'] = df['col'].apply(lambda x: 'high' if x >= mean_val else 'low')
+```
+Create a series from a numeric column that is 'high' if it is equal to or above the mean and 'low' otherwise using np.select:
+
+```python
+
+conditions = [df['col'] >= df['col'].mean()]
+choices = ['high']
+df['label'] = np.select(conditions, choices, default='low')
+```
+Time the differences between the previous two solutions to see which is faster:
+
+```python
+
+import time
+start = time.time()
+df['label'] = df['col'].apply(lambda x: 'high' if x >= mean_val else 'low')
+print("apply time:", time.time() - start)
+
+start = time.time()
+df['label'] = np.select(conditions, choices, default='low')
+print("np.select time:", time.time() - start)
+```
+Replace the missing values of a numeric series with the median value:
+
+```python
+
+median_val = df['col'].median()
+df['col'] = df['col'].fillna(median_val)
+```
+Clip the values of a numeric series to between the 10th and 90th percentiles:
+
+```python
+
+df['col'] = df['col'].clip(lower=df['col'].quantile(0.1), upper=df['col'].quantile(0.9))
+```
+Replace any value in a categorical column that is not in the top 5 most frequent values with 'Other':
+
+```python
+
+top_5 = df['col'].value_counts().nlargest(5).index
+df['col'] = df['col'].where(df['col'].isin(top_5), 'Other')
+```
+Replace any value in a categorical column that is not in the top 10 most frequent values with 'Other':
+
+```python
+
+top_10 = df['col'].value_counts().nlargest(10).index
+df['col'] = df['col'].where(df['col'].isin(top_10), 'Other')
+```
+Function to replace values not in the top n most frequent with 'Other':
+
+```python
+
+def replace_top_n(series, n):
+    top_n = series.value_counts().nlargest(n).index
+    return series.where(series.isin(top_n), 'Other')
+
+df['col'] = replace_top_n(df['col'], 5)
+```
+Bin a numeric column into 10 groups of equal width:
+
+```python
+
+    df['binned'] = pd.cut(df['col'], bins=10)
+```
+    Bin a numeric column into 10 groups with equal-sized bins:
+
+```python
+
+df['binned'] = pd.qcut(df['col'], q=10)
+```
