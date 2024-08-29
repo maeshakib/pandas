@@ -221,3 +221,69 @@ top_oceania_wines = reviews.loc[reviews.country.isin(['Australia', 'New Zealand'
  ```
 
 
+
+## 03-summary-functions-and-maps Exercises
+### 1.what is the median of the points column in the reviews DataFrame?
+```python
+median_points = reviews.points.median()
+median_points
+```
+
+### 2.What countries are represented in the dataset? (Your answer should not include any duplicates.)
+
+
+```python
+countries = reviews.country.unique()
+countries
+```
+3.
+How often does each country appear in the dataset? Create a Series reviews_per_country mapping countries to the count of reviews of wines from that country.
+```python
+median_points = reviews.points.median()
+median_points
+```
+4.
+Create variable centered_price containing a version of the price column with the mean price subtracted.
+
+(Note: this 'centering' transformation is a common preprocessing step before applying various machine learning algorithms.)
+```python
+centered_price = reviews.price - reviews.price.mean()
+centered_price
+```
+5.
+I'm an economical wine buyer. Which wine is the "best bargain"? Create a variable bargain_wine with the title of the wine with the highest points-to-price ratio in the dataset.
+```python
+bargain_wine = reviews.loc[(reviews.points / reviews.price).idxmax(), 'title']
+bargain_wine
+```
+6.
+There are only so many words you can use when describing a bottle of wine. Is a wine more likely to be "tropical" or "fruity"? Create a Series descriptor_counts counting how many times each of these two words appears in the description column in the dataset.
+```python
+tropical = reviews.description.map(lambda x: "tropical" in x).sum()
+fruity = reviews.description.map(lambda x: "fruity" in x).sum()
+descriptor_counts = pd.Series([tropical, fruity], index=['tropical', 'fruity'])
+
+descriptor_counts
+`7.
+We'd like to host these wine reviews on our website, but a rating system ranging from 80 to 100 points is too hard to understand - we'd like to translate them into simple star ratings. A score of 95 or higher counts as 3 stars, a score of at least 85 but less than 95 is 2 stars. Any other score is 1 star.
+
+Also, the Canadian Vintners Association bought a lot of ads on the site, so any wines from Canada should automatically get 3 stars, regardless of points.
+
+Create a series star_ratings with the number of stars corresponding to each review in the dataset.``
+
+```python
+def rating(row):
+    return 3 if row.points >= 95 or row.country == 'Canada' else (2 if row.points >= 85 else 1)
+star_ratings = reviews.apply(rating, axis='columns')
+star_ratings
+```
+
+```python
+median_points = reviews.points.median()
+median_points
+```
+
+```python
+median_points = reviews.points.median()
+median_points
+```
