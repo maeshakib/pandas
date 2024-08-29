@@ -365,38 +365,109 @@ powerlifting_meets = pd.read_csv("../input/powerlifting-database/meets.csv")
 powerlifting_competitors = pd.read_csv("../input/powerlifting-database/openpowerlifting.csv")
 ```
 
-```python
-median_points = reviews.points.median()
-median_points
-```
-
+Effective Pandas Patterns for Data Manipulation
+1. Importing and Basic Setup
 
 ```python
-median_points = reviews.points.median()
-median_points
+
+import pandas as pd
+import numpy as np
 ```
+2. Creating DataFrames
 
 ```python
-median_points = reviews.points.median()
-median_points
-```
 
+# From a dictionary
+data = {'col1': [1, 2], 'col2': [3, 4]}
+df = pd.DataFrame(data)
+
+# From a list of lists
+data = [[1, 2], [3, 4]]
+df = pd.DataFrame(data, columns=['col1', 'col2'])
+```
+3. Viewing Data
 
 ```python
-median_points = reviews.points.median()
-median_points
+
+df.head()         # First 5 rows
+df.tail()         # Last 5 rows
+df.sample(n=5)    # Random 5 rows
+df.info()         # Summary of the DataFrame
+df.describe()     # Statistical summary
 ```
+4. Selecting Data
 
 ```python
-median_points = reviews.points.median()
-median_points
-```
 
+# Selecting columns
+df['col1']           # Single column (returns Series)
+df[['col1', 'col2']] # Multiple columns (returns DataFrame)
+```
+# Selecting rows
+df.iloc[0]           # First row by index
+df.loc[0]            # First row by label
+df.iloc[0:5]         # First 5 rows by index
+
+# Boolean indexing
+df[df['col1'] > 2]   # Rows where col1 > 2
+```
+5. Adding and Modifying Columns
 
 ```python
-median_points = reviews.points.median()
-median_points
+
+# Add new column
+df['col3'] = df['col1'] + df['col2']
+
+# Modify existing column
+df['col1'] = df['col1'] * 2
 ```
+6. Handling Missing Data
 
+```python
 
+df.dropna()                # Drop rows with missing values
+df.fillna(value=0)         # Fill missing values with 0
+df.isna()                  # Boolean DataFrame of missing values
+```
+7. Aggregation and Grouping
 
+```python
+
+# Aggregation
+df['col1'].sum()           # Sum of col1
+df['col1'].mean()          # Mean of col1
+
+# Grouping
+df_grouped = df.groupby('col2').sum()  # Group by col2 and sum
+```
+8. Merging and Joining
+
+```python
+
+# Merge DataFrames
+df1 = pd.DataFrame({'key': ['A', 'B', 'C'], 'col1': [1, 2, 3]})
+df2 = pd.DataFrame({'key': ['B', 'C', 'D'], 'col2': [4, 5, 6]})
+df_merged = pd.merge(df1, df2, on='key', how='inner')
+
+# Join DataFrames
+df_joined = df1.join(df2.set_index('key'), on='key')
+```
+9. Reshaping Data
+
+```python
+
+# Pivot Table
+df_pivot = df.pivot(index='index_col', columns='columns_col', values='values_col')
+
+# Melting
+df_melt = pd.melt(df, id_vars=['key'], value_vars=['col1', 'col2'])
+```
+10. Exporting Data
+
+```python
+
+df.to_csv('filename.csv', index=False)  # Export to CSV
+df.to_excel('filename.xlsx', index=False)  # Export to Excel
+df.to_json('filename.json')  # Export to JSON
+
+```
